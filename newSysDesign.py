@@ -28,19 +28,18 @@ from scipy.optimize import minimize
 import numpy as np
 import matplotlib.pyplot as plt
 
-mass = 0.2  # kg of STEMnaut capsule
+mass = 0.5  # kg of STEMnaut capsule
 initial_position = 0  # m of smd system
-#impact_velocity = 6  # m/s
 time_step = 0.001  # Time step for simulation (s)
 total_time = 3.0  # Total simulation time (s)
 desired_max_acceleration = 120 #during/after impact
-displacement_threshold = .17 # meters of displacement of the spring mass damper system in one direction
+displacement_threshold = .15 # meters of displacement of the spring mass damper system in one direction
 mass_kg = 3  # Mass in kilograms of whole payload
 diameter_m = 0.127  # Diameter in meters
 height_m = 130  # Initial height in meters
 dt = 0.001  # Time step in seconds
 initial_velocity_m_per_s = 4  # Initial velocity in m/s
-F_thrust = 29.3  # Thrust force in Newtons
+F_thrust = 0  # Thrust force in Newtons
 
 # Constants
 g = 9.81  # Acceleration due to gravity in m/s^2
@@ -75,6 +74,7 @@ while position > 0:
     # Store the current height and velocity
     heights.append(position)
     velocities.append(velocity)
+
 impact_velocity = velocities[-1]
 
 
@@ -127,7 +127,7 @@ def spring_mass_damper_simulation(x):
         # Update maximum displacement if needed
         max_displacement = max(max_displacement, abs(position))
     
-    return np.abs(max_displacement)
+    return np.abs(max_displacement - displacement_threshold)
 
 def acceleration_constraint(x):
     damping_coefficient = x[0]
@@ -152,19 +152,19 @@ def acceleration_constraint(x):
         time += time_step
 
     # The constraint function should return a value less than or equal to zero when the constraint is met
-    return desired_max_acceleration - max_acceleration
+    return np.abs(max_acceleration - desired_max_acceleration)
 
 def spring_constant_constraint(x):
     spring_constant = x[1]
-    K_min = 0.0328  # Adjust this to your minimum allowable spring constant
-    K_max = 361.55  # Adjust this to your maximum allowable spring constant
+    K_min = 0  # Adjust this to your minimum allowable spring constant
+    K_max = 0  # Adjust this to your maximum allowable spring constant
 
     # The constraint function should return a value less than or equal to zero when the constraint is met
     return min(spring_constant - K_min, K_max - spring_constant)
 
 # Define constraints
-constraints = [{'type': 'ineq', 'fun': acceleration_constraint},
-               {'type': 'ineq', 'fun': spring_constant_constraint}]
+constraints = [{'type': 'ineq', 'fun': acceleration_constraint}]#,
+               #{'type': 'ineq', 'fun': spring_constant_constraint}]
 
 
 
