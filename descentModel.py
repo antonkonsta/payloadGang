@@ -2,12 +2,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Set up your variables here
-mass_kg = 2.5  # Mass in kilograms
+mass_kg = 3  # Mass in kilograms
 diameter_m = 0.127  # Diameter in meters
 height_m = 130  # Initial height in meters
 dt = 0.001  # Time step in seconds
-initial_velocity_m_per_s = 3.9624  # Initial velocity in m/s
-F_thrust = 10  # Thrust force in Newtons
+initial_velocity_m_per_s = 4  # Initial velocity in m/s
+F_thrust = 29  # Thrust force in Newtons
 
 # Constants
 g = 9.81  # Acceleration due to gravity in m/s^2

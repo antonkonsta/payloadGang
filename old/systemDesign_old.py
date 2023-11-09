@@ -30,11 +30,11 @@ import matplotlib.pyplot as plt
 
 mass = 0.1  # kg
 initial_position = 0  # m
-initial_velocity = 6  # m/s
+initial_velocity = 10  # m/s
 time_step = 0.001  # Time step for simulation (s)
 total_time = 3.0  # Total simulation time (s)
-desired_max_acceleration = 120
-displacement_threshold = .17
+desired_acceleration = 90
+displacement_threshold = .2
 
 def simulate_system_with_params(c, K):
     time = 0.0
@@ -64,11 +64,11 @@ def simulate_system_with_params(c, K):
 def spring_mass_damper_simulation(x):
     # Initialize variables
     damping_coefficient = x[0]   # Ns/m
-    spring_constant = x[1]       # N/m
+    spring_constant = x[1] # N/m
     time = 0.0
     position = initial_position
     velocity = initial_velocity
-    max_displacement = 0.0
+    max_acceleration = 0.0
     
     while time < total_time:
         # Calculate acceleration (from Newton's second law)
@@ -81,25 +81,22 @@ def spring_mass_damper_simulation(x):
         # Update time
         time += time_step
         
-        # Update maximum displacement if needed
-        max_displacement = max(max_displacement, abs(position))
+        # Update maximum acceleration if needed
+        max_acceleration = max(max_acceleration, abs(acceleration))
     
-    return np.abs(max_displacement)
+    return np.abs((desired_acceleration - max_acceleration))
 
-def acceleration_constraint(x):
+def displacement_constraint(x):
     damping_coefficient = x[0]
     spring_constant = x[1]
+    
     time = 0.0
     position = initial_position
     velocity = initial_velocity
-    max_acceleration = 0.0  # Initialize max acceleration
 
     while time < total_time:
         # Calculate acceleration (from Newton's second law)
         acceleration = (-damping_coefficient * velocity - spring_constant * position) / mass
-
-        # Check for max acceleration
-        max_acceleration = max(max_acceleration, abs(acceleration))
 
         # Update velocity and position using the Euler method
         velocity += acceleration * time_step
@@ -108,11 +105,10 @@ def acceleration_constraint(x):
         # Update time
         time += time_step
 
-    # The constraint function should return a value less than or equal to zero when the constraint is met
-    return desired_max_acceleration - max_acceleration
+    return position # Ensure position is below the threshold
 
 # Define constraints
-constraints = [{'type': 'ineq', 'fun': acceleration_constraint}]
+constraints = [{'type': 'eq', 'fun': displacement_constraint}]
 
 
 # Initial guess and bounds
