@@ -31,8 +31,8 @@ import matplotlib.pyplot as plt
 mass = 0.1  # kg
 initial_position = 0  # m
 initial_velocity = 15  # m/s
-time_step = 0.01  # Time step for simulation (s)
-total_time = 5.0  # Total simulation time (s)
+time_step = 0.001  # Time step for simulation (s)
+total_time = 3.0  # Total simulation time (s)
 desired_acceleration = 120
 displacement_threshold = 1
 
