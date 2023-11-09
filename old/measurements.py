@@ -11,19 +11,18 @@ def system_derivatives(y, t, m, c, k):
 
 # Known parameters
 g = 9.81  # gravitational acceleration (m/s^2)
-m = float(input("Enter the mass of the system (kg): "))  # mass of the system
-v0 = float(input("Enter the initial velocity at impact (m/s): "))  # initial velocity
-max_disp = float(input("Enter the max displacement (m): "))  # max allowable displacement
+m = .2  # mass of the system
+v0 = 6.8  # initial velocity
+max_disp = .15  # max allowable displacement
+# Input spring constant and damping coefficient
+k =0.001
+c = 1
 
 # Time array for simulation
 t = np.linspace(0, 10, 1000)  # Adjust as necessary
 
 # Initial conditions: [initial displacement, initial velocity]
 initial_conditions = [0, v0]
-
-# Input spring constant and damping coefficient
-k = float(input("Enter the spring constant (N/m): "))
-c = float(input("Enter the damping coefficient (kg/s): "))
 
 # Solve the system
 solution = odeint(system_derivatives, initial_conditions, t, args=(m, c, k))

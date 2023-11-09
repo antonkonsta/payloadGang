@@ -28,24 +28,24 @@ from scipy.optimize import minimize
 import numpy as np
 import matplotlib.pyplot as plt
 
-mass = 0.5  # kg of STEMnaut capsule
+mass = 0.2  # kg of STEMnaut capsule
 initial_position = 0  # m of smd system
 time_step = 0.001  # Time step for simulation (s)
 total_time = 3.0  # Total simulation time (s)
 desired_max_acceleration = 120 #during/after impact
-displacement_threshold = .15 # meters of displacement of the spring mass damper system in one direction
+displacement_threshold = .13 # meters of displacement of the spring mass damper system in one direction
 mass_kg = 3  # Mass in kilograms of whole payload
-diameter_m = 0.127  # Diameter in meters
+diameter_m = 0.117602  # Diameter in meters
 height_m = 130  # Initial height in meters
 dt = 0.001  # Time step in seconds
 initial_velocity_m_per_s = 4  # Initial velocity in m/s
-F_thrust = 0  # Thrust force in Newtons
+F_thrust = 29.3  # Thrust force in Newtons
 
 # Constants
 g = 9.81  # Acceleration due to gravity in m/s^2
 rho = 1.225  # Air density in kg/m^3
 A = np.pi * (diameter_m / 2)**2  # Cross-sectional area in m^2
-drag_coefficient = 0.3  # Drag coefficient for a sphere
+drag_coefficient = 0.3  # Drag coefficient for nosecone
 
 # Lists to store height and velocity values
 heights = []
@@ -173,7 +173,7 @@ initial_guess = [0.1, 10.0]  # Adjust these based on your knowledge
 bounds = [(0, None), (0, None)]  # Non-negative values for damping and spring constant
 
 # Choose an optimization method (e.g., SLSQP)
-result = minimize(spring_mass_damper_simulation, initial_guess, method='SLSQP', bounds=bounds, constraints=constraints)
+result = minimize(spring_mass_damper_simulation, initial_guess, method='trust-constr', bounds=bounds, constraints=constraints)
 
 
 
