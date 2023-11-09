@@ -28,18 +28,18 @@ from scipy.optimize import minimize
 import numpy as np
 import matplotlib.pyplot as plt
 
-mass = 0.1  # kg
-initial_position = 0  # m
-initial_velocity = 6  # m/s
+mass = 0.1  # kg of STEMnaut capsule
+initial_position = 0  # m of smd system
+impact_velocity = 7  # m/s
 time_step = 0.001  # Time step for simulation (s)
 total_time = 3.0  # Total simulation time (s)
-desired_max_acceleration = 120
-displacement_threshold = .17
+desired_max_acceleration = 120 #during/after impact
+displacement_threshold = .17 # meters of displacement of the spring mass damper system in one direction
 
 def simulate_system_with_params(c, K):
     time = 0.0
     position = initial_position
-    velocity = initial_velocity
+    velocity = impact_velocity
     acceleration_list = []  # To store acceleration values
     position_list = []      # To store position values
 
@@ -67,7 +67,7 @@ def spring_mass_damper_simulation(x):
     spring_constant = x[1]       # N/m
     time = 0.0
     position = initial_position
-    velocity = initial_velocity
+    velocity = impact_velocity
     max_displacement = 0.0
     
     while time < total_time:
@@ -91,7 +91,7 @@ def acceleration_constraint(x):
     spring_constant = x[1]
     time = 0.0
     position = initial_position
-    velocity = initial_velocity
+    velocity = impact_velocity
     max_acceleration = 0.0  # Initialize max acceleration
 
     while time < total_time:

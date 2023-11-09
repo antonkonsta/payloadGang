@@ -28,24 +28,25 @@ from scipy.optimize import minimize
 import numpy as np
 import matplotlib.pyplot as plt
 
-mass = 0.1  # kg
-initial_position = 0  # m
-#initial_velocity = 6  # m/s
+mass = 0.2  # kg of STEMnaut capsule
+initial_position = 0  # m of smd system
+#impact_velocity = 6  # m/s
+time_step = 0.001  # Time step for simulation (s)
 total_time = 3.0  # Total simulation time (s)
-desired_max_acceleration = 120
-displacement_threshold = .17
+desired_max_acceleration = 120 #during/after impact
+displacement_threshold = .17 # meters of displacement of the spring mass damper system in one direction
+mass_kg = 3  # Mass in kilograms of whole payload
 diameter_m = 0.127  # Diameter in meters
 height_m = 130  # Initial height in meters
 dt = 0.001  # Time step in seconds
-initial_velocity_m_per_s = 4  # Initial velocity in m/s during deployment
-F_thrust = 29  # Thrust force in Newtons
+initial_velocity_m_per_s = 4  # Initial velocity in m/s
+F_thrust = 29.3  # Thrust force in Newtons
 
 # Constants
 g = 9.81  # Acceleration due to gravity in m/s^2
 rho = 1.225  # Air density in kg/m^3
 A = np.pi * (diameter_m / 2)**2  # Cross-sectional area in m^2
-drag_coefficient = 0.47  # Drag coefficient for a sphere
-
+drag_coefficient = 0.3  # Drag coefficient for a sphere
 
 # Lists to store height and velocity values
 heights = []
@@ -58,14 +59,14 @@ position = height_m
 # Simulation loop
 while position > 0:
     # Force calculations
-    F_gravity = mass * g
+    F_gravity = mass_kg * g
     F_drag = 0.5 * drag_coefficient * rho * A * velocity**2
     
     # If thrust is active, subtract it from the net force
     net_force = F_gravity - F_drag - F_thrust
 
     # Acceleration (net force divided by mass)
-    acceleration = net_force / mass
+    acceleration = net_force / mass_kg
 
     # Update velocity and position
     velocity += acceleration * dt
@@ -74,8 +75,8 @@ while position > 0:
     # Store the current height and velocity
     heights.append(position)
     velocities.append(velocity)
-
 impact_velocity = velocities[-1]
+
 
 
 def simulate_system_with_params(c, K):
@@ -90,15 +91,15 @@ def simulate_system_with_params(c, K):
         acceleration = (-c * velocity - K * position) / mass
         
         # Update velocity and position using the Euler method
-        velocity += acceleration * dt   
-        position += velocity * dt
+        velocity += acceleration * time_step
+        position += velocity * time_step
 
         # Store acceleration and position values
         acceleration_list.append(acceleration)
         position_list.append(position)
 
         # Update time
-        time += dt
+        time += time_step
 
     return position_list, acceleration_list 
 
@@ -117,11 +118,11 @@ def spring_mass_damper_simulation(x):
         acceleration = (-damping_coefficient * velocity - spring_constant * position) / mass
         
         # Update velocity and position using the Euler method
-        velocity += acceleration * dt
-        position += velocity * dt
+        velocity += acceleration * time_step
+        position += velocity * time_step
         
         # Update time
-        time += dt
+        time += time_step
         
         # Update maximum displacement if needed
         max_displacement = max(max_displacement, abs(position))
@@ -144,11 +145,11 @@ def acceleration_constraint(x):
         max_acceleration = max(max_acceleration, abs(acceleration))
 
         # Update velocity and position using the Euler method
-        velocity += acceleration * dt
-        position += velocity * dt
+        velocity += acceleration * time_step
+        position += velocity * time_step
 
         # Update time
-        time += dt
+        time += time_step
 
     # The constraint function should return a value less than or equal to zero when the constraint is met
     return desired_max_acceleration - max_acceleration
@@ -184,32 +185,29 @@ optimal_K = optimized_params[1]
 displacement, acceleration = simulate_system_with_params(optimal_c, optimal_K)
 
 # Plot displacement vs. time
-plt.figure(figsize=(10, 4))
-plt.subplot(1, 2, 1)
-time_values = np.arange(0, total_time + dt, dt)  # Include the endpoint
+plt.figure(figsize=(10, 8))
+plt.subplot(2, 2, 1)
+time_values = np.arange(0, total_time + time_step, time_step)  # Include the endpoint
 plt.plot(time_values, displacement)
 plt.xlabel('Time (s)')
 plt.ylabel('Displacement (m)')
 plt.title('Displacement vs. Time')
 
 # Plot acceleration vs. time
-plt.subplot(1, 2, 2)
+plt.subplot(2, 2, 3)
 plt.plot(time_values, acceleration)
 plt.xlabel('Time (s)')
 plt.ylabel('Acceleration (m/s^2)')
 plt.title('Acceleration vs. Time')
 
-plt.tight_layout()
-plt.show()
-
-# Plot
-plt.figure(figsize=(10, 5))
-
-# Plot velocity vs height
+# Plot velocity vs height - make this plot wider
+plt.subplot(2, 2, (2, 4))  # This will span the plot across two columns
 plt.plot(velocities, heights)
 plt.xlabel('Velocity (m/s)')
 plt.ylabel('Height (m)')
 plt.title('Velocity vs. Height During Descent')
-plt.gca().invert_yaxis()  # Invert y-axis to show descent from initial height to ground
+#plt.gca().invert_yaxis()  # Invert y-axis to show descent from initial height to ground
 plt.grid(True)
+
+plt.tight_layout()  # This will ensure the plots are not overlapping
 plt.show()

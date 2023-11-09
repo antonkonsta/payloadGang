@@ -2,18 +2,18 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Set up your variables here
-mass_kg = 3  # Mass in kilograms
+mass_kg = 3  # Mass in kilograms of whole payload
 diameter_m = 0.127  # Diameter in meters
 height_m = 130  # Initial height in meters
 dt = 0.001  # Time step in seconds
 initial_velocity_m_per_s = 4  # Initial velocity in m/s
-F_thrust = 29  # Thrust force in Newtons
+F_thrust = 29.5  # Thrust force in Newtons
 
 # Constants
 g = 9.81  # Acceleration due to gravity in m/s^2
 rho = 1.225  # Air density in kg/m^3
 A = np.pi * (diameter_m / 2)**2  # Cross-sectional area in m^2
-drag_coefficient = 0.47  # Drag coefficient for a sphere
+drag_coefficient = 0.3  # Drag coefficient for a sphere
 
 # Lists to store height and velocity values
 heights = []
@@ -42,6 +42,8 @@ while position > 0:
     # Store the current height and velocity
     heights.append(position)
     velocities.append(velocity)
+
+
 
 # Plot
 plt.figure(figsize=(10, 5))
