@@ -154,8 +154,18 @@ def acceleration_constraint(x):
     # The constraint function should return a value less than or equal to zero when the constraint is met
     return desired_max_acceleration - max_acceleration
 
+def spring_constant_constraint(x):
+    spring_constant = x[1]
+    K_min = 0.0328  # Adjust this to your minimum allowable spring constant
+    K_max = 361.55  # Adjust this to your maximum allowable spring constant
+
+    # The constraint function should return a value less than or equal to zero when the constraint is met
+    return min(spring_constant - K_min, K_max - spring_constant)
+
 # Define constraints
-constraints = [{'type': 'ineq', 'fun': acceleration_constraint}]
+constraints = [{'type': 'ineq', 'fun': acceleration_constraint},
+               {'type': 'ineq', 'fun': spring_constant_constraint}]
+
 
 
 # Initial guess and bounds
