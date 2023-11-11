@@ -7,6 +7,7 @@ from scipy.optimize import minimize
 
 
 #============================== USER SETTINGS ============================== 
+
 # Descent settings
 deployment_height_ft = 450 # Feet
 initial_deployment_velocity_fts = 13 # Feet/s
@@ -20,18 +21,20 @@ area_in = 16.82 # Inches Squared (Cross sectional area of payload)
 # Spring Mass Damper settings
 mass_capsule_lb = 0.5 # lbs
 initial_displacement_in = 0 # inches
-max_displacement_in = 5 # inches
+max_displacement_in = 6 # inches
 simulation_duration_smd = 1# Seconds
 
 #Simulation Setup:  (To "plug in" values of K, c or thrust, simply set the max & min to that value)
-min_k = 0.001 # Minimum K Value
-max_k = 999 # Maximum K Value
+min_k = 0.0000001 # Minimum K Value
+max_k = 999999 # Maximum K Value
 
-min_c = 0.001 # Minimum c Value
-max_c = 99# Maximum c Value
+min_c = 0.00000001 # Minimum c Value
+max_c = 999999999# Maximum c Value
 
 min_thrust = 0 # Minimum Thrust (Newtons)
-max_thrust = mass_payload_lb  * 4.44822 * .999 # Max Thrust (Newtons) - ( "mass_payload_lb  * 4.44822 * .99 " is used to ensure the force of thrust wont be above the weight of the payload)
+max_thrust = mass_payload_lb  * 4.44822 * .9  # Max Thrust (Newtons) - ( "mass_payload_lb  * 4.44822 * .99 " is used to ensure the force of thrust wont be above the weight of the payload)
+
+weight = 0.4 # Balance of priority between displacement and g force
 
 
 
@@ -76,7 +79,7 @@ def objective_function(params):
     displacement_error = np.abs(max_displacement_in - (max(displacement) - min(displacement)) * 39.3701)  # Convert meters to inches
 
     # You can adjust the weights as per your preference
-    return displacement_error + .4 * max_g_force
+    return displacement_error + weight * max_g_force
 
 # Bounds for k, c, and thrust (assuming some reasonable bounds)
 bounds = [(min_k, max_k), (min_c, max_c), (min_thrust, max_thrust)]
