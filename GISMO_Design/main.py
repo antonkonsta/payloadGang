@@ -144,7 +144,7 @@ plt.figure(figsize=(10, 8))
 
 # Displacement vs. Time
 plt.subplot(2, 2, 1)
-plt.plot(t_smd, displacement_result)
+plt.plot(t_smd, displacement_result, label='Displacement')
 plt.scatter(t_smd[max_displacement_index], max_displacement, color='red')  # Mark the max point
 plt.text(t_smd[max_displacement_index], max_displacement, f'  {max_displacement:.2f} in', color='black', fontsize=label_fontsize)  # Label the max point
 plt.scatter(t_smd[min_displacement_index], min_displacement, color='blue')  # Mark the min point
@@ -154,30 +154,34 @@ plt.xlabel('Time (s)')
 plt.ylabel('Displacement (in)')
 plt.title('Displacement vs. Time')
 plt.grid(True)
+plt.legend()
 
 # G Force vs. Time
 plt.subplot(2, 2, 3)
-plt.plot(t_smd, G_Force_result)
+plt.plot(t_smd, G_Force_result, label='G Force')
 plt.scatter(t_smd[max_g_force_index], max_g_force, color='red')  # Mark the point
 plt.text(t_smd[max_g_force_index], max_g_force, f'  {max_g_force:.2f} Gs', color='black', fontsize=label_fontsize)  # Label the point with increased font size
 plt.xlabel('Time (s)')
 plt.ylabel('G Force')
 plt.title('G Force vs. Time')
 plt.grid(True)
+plt.legend()
 
-# Velocity vs. Height During Descent
+# Height vs. Velocity During Descent
 plt.subplot(2, 2, 2)
 plt.plot(velocity_descent_result, height_result)
 # Mark the point
 plt.scatter(velocity_at_zero_height, height_result[zero_height_index], color='red')  
 # Label the point with increased font size and offset
 plt.text(velocity_at_zero_height, height_result[zero_height_index] + 5, f'  {velocity_at_zero_height:.2f} ft/s', color='black', fontsize=label_fontsize)  
-plt.axhline(y=deployment_height_ft, color='b', linestyle='--', label=f'Initial Height: {deployment_height_ft} ft')  # Dotted line for initial height
-plt.axhline(y=0, color='darkgreen', linestyle='-', linewidth=2, label='Ground Level')  # Thick dark green line for ground level
+plt.axhline(y=deployment_height_ft, color='b', linestyle='--', label=f'Initial Height: {deployment_height_ft} ft')
+plt.axhline(y=0, color='darkgreen', linestyle='-', linewidth=2, label='Ground Level')
 plt.xlabel('Velocity (ft/s)')
 plt.ylabel('Height (ft)')
 plt.title('Velocity vs. Height During Descent')
 plt.grid(True)
+plt.ylim(bottom=-20)  # Set the lower limit of the y-axis to 0 (ground level)
+plt.legend()
 
 # Optimized Values Display
 plt.subplot(2, 2, 4)
@@ -197,7 +201,7 @@ plt.text(0.58, 0.13, f'Optimal Damping Coefficient (c): {optimized_c:.2f} Ns/m',
 plt.text(0.58, 0.1, f'Optimal Thrust: {optimized_thrust:.2f} N', ha='left', fontsize=11, transform=plt.gcf().transFigure)
 
 # Set the x and y axis limits
-plt.xlim(0, velocity_at_zero_height * 1.5)  # Adjust the right limit to be slightly more than the velocity at zero height
+plt.xlim(0, velocity_at_zero_height * 1.3)  # Adjust the right limit to be slightly more than the velocity at zero height
 upper_limit = deployment_height_ft * 1.1  # Set upper limit to 110% of initial height
 plt.ylim(-20, upper_limit)  # Adjust the lower limit to be slightly below zero, and set upper limit with buffer
 
@@ -214,6 +218,5 @@ print(f"Maximum G-Force Experienced: {max_g_force:.2f} Gs")
 print(f"Maximum Displacement: {max_displacement:.2f} inches")
 print(f"Impact Velocity: {impact_velocity_fts:.2f} ft/s")
 
-plt.legend()
 plt.tight_layout()
 plt.show()
