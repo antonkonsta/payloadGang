@@ -6,17 +6,17 @@ import matplotlib.pyplot as plt
 def system_derivatives(y, t, m, c, k):
     x, v = y
     dxdt = v
-    dvdt = (-c * v - k * x) / m + g  # adding gravity
+    dvdt = (-c * v - k * x) / m   # adding gravity
     return [dxdt, dvdt]
 
 # Known parameters
 g = 9.81  # gravitational acceleration (m/s^2)
 m = .2  # mass of the system
-v0 = 6.8  # initial velocity
+v0 = 4.8  # initial velocity
 max_disp = .15  # max allowable displacement
 # Input spring constant and damping coefficient
-k =0.001
-c = 1
+k = 50.4
+c = 3
 
 # Time array for simulation
 t = np.linspace(0, 10, 1000)  # Adjust as necessary
