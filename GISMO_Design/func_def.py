@@ -14,4 +14,12 @@ def simulate_smd(initial_displacement, initial_velocity, m_capsule, c, k, t):
     acceleration = np.gradient(velocity, t)
     return displacement, velocity, acceleration
 
-def simulate_descent(initial_state, t, args=(rho, mass, drag_coefficient, area, thrust)):
+def simulate_descent(initial_velocity, initial_height, rho, mass, drag_coefficient, area, thrust, t):
+
+    initial_state = [initial_velocity, initial_height]
+    solution = odeint(descent, initial_state, t, args=(rho, mass, drag_coefficient, area, thrust))
+
+    velocity = solution[:,0]
+    acceleration = np.gradient(velocity, t)
+    height = solution[:,1]
+    return height, velocity, acceleration

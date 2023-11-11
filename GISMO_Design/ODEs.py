@@ -4,7 +4,7 @@ This module is used to model and store governing equations.
 Since odeint library is used to solve the ODE's, equations are modeled as functions
 in the syntax required by odeint. They are not standalone functions.
 '''
-
+g = 9.81
 # SPRING MASS DAMPER MODEL
 def spring_mass_damper(initial_conditions, t, m_capsule, c, k):
     #print("Mass of capsule: ", m_capsule, c, k)
@@ -20,7 +20,7 @@ def descent(y, t, rho, mass_payload, drag_coefficient, area, thrust):
     # Net force
     net_force = mass_payload * g - F_drag - thrust
     # Acceleration
-    dvdt = net_force / mass
+    dvdt = net_force / mass_payload
     # Derivative of height is the velocity
     dhdt = -v  # Negative because as the object falls, height decreases
     return [dvdt, dhdt]
