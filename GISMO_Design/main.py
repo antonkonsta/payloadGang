@@ -5,6 +5,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.optimize import minimize
 
+
+#============================== USER SETTINGS ============================== 
 # Descent settings
 deployment_height_ft = 450 # Feet
 initial_deployment_velocity_fts = 13 # Feet/s
@@ -20,6 +22,20 @@ mass_capsule_lb = 0.5 # lbs
 initial_displacement_in = 0 # inches
 max_displacement_in = 5 # inches
 simulation_duration_smd = 1# Seconds
+
+#Simulation Setup:  (To "plug in" values of K, c or thrust, simply set the max & min to that value)
+min_k = 0.001 # Minimum K Value
+max_k = 999 # Maximum K Value
+
+min_c = 0.001 # Minimum c Value
+max_c = 99# Maximum c Value
+
+min_thrust = 0 # Minimum Thrust (Newtons)
+max_thrust = mass_payload_lb  * 4.44822 * .999 # Max Thrust (Newtons) - ( "mass_payload_lb  * 4.44822 * .99 " is used to ensure the force of thrust wont be above the weight of the payload)
+
+
+
+#============================== VARIABLE SETUP (IGNORE) ============================== 
 
 # Miscellaneous Constants
 g = 9.81 # Gravity
@@ -40,7 +56,8 @@ t_smd = np.linspace(0, simulation_duration_smd, data_points)
 t_d = np.linspace(0, simulation_duration_d, data_points)
 
 
-#                        Optimization Section
+
+#============================== OPTIMIZATION FUNCTION ============================== 
 
 def objective_function(params):
     k, c, thrust = params
@@ -62,7 +79,7 @@ def objective_function(params):
     return displacement_error + .4 * max_g_force
 
 # Bounds for k, c, and thrust (assuming some reasonable bounds)
-bounds = [(.001, 999), (0.01, 99), (0, 29.3)]
+bounds = [(min_k, max_k), (min_c, max_c), (min_thrust, max_thrust)]
 
 # Initial guesses for k, c, and thrust
 initial_guess = [50, 5, 20]
@@ -70,11 +87,12 @@ initial_guess = [50, 5, 20]
 # Perform the optimization
 result = minimize(objective_function, initial_guess, bounds=bounds)
 
+
+
+#============================== EXTRACT & CONVERT RESULTING DATA ============================== 
+
 # Extract the optimized parameters
 optimized_k, optimized_c, optimized_thrust = result.x
-
-#                        Optimization End
-
 
 height, velocity_descent, acceleration_descent = simulate_descent(initial_deployment_velocity_ms, deployment_height_m, rho, mass_payload_kg, drag_coefficient, area_m, optimized_thrust, t_d)
 # Find the index where height is closest to zero
@@ -111,6 +129,9 @@ zero_height_index = (np.abs(height_result)).argmin()
 # Corresponding velocity at the point where height is closest to zero
 velocity_at_zero_height = velocity_descent_result[zero_height_index]
 
+
+
+#============================== PLOTS ============================== 
 
 # Font size for the text labels
 label_fontsize = 13  # You can adjust this value as needed
